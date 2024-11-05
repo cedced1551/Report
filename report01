@@ -1,0 +1,100 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#define MAX 5
+// 구조체 정의
+typedef struct {
+	int last_index;
+	int data[MAX];
+} ArrayStruc;
+// 구조체 초기화 함수
+void initialization(ArrayStruc* s) {
+	s->last_index = -1;
+}
+// 데이터가 가득 찼는지 확인하는 함수
+int isFull(ArrayStruc* s) {
+	return s->last_index == MAX - 1;
+}
+// 구조체가 비었는지 확인하는 함수
+int isEmpty(ArrayStruc* s) {
+	return s->last_index == -1;
+}
+// 구조체에 데이터 추가 함수
+void insert(ArrayStruc* s, int value) {
+	// 데이터가 가득차 있을 경우 오버플로우 출력
+	//그렇지 않을 경우 데이터 삽입
+	if (isFull(s)) {
+		printf("오버플로우\n");
+		return 0;
+	}
+	else {
+		s->data[++(s->last_index)] = value;
+		return 1;
+	}
+}
+// 구조체에서 데이터 제거 함수
+int delete(ArrayStruc* s) {
+	if (isEmpty(s)) {
+		printf("언더플로우\n");
+		return -1;
+	}
+	else {
+		return s->data[(s->last_index)--];
+	}
+}
+// 구조체의 맨 마지막 데이터 확인 함수
+int showLast(ArrayStruc* s) {
+	if (isEmpty(s)) {
+		printf("구조체 비어 있습니다\n");
+		return -1;
+	}
+	else {
+		return s->data[s->last_index];
+	}
+}
+// 메인 함수
+int main() {
+	ArrayStruc s;
+	int choice, value;
+	initialization(&s);
+	// 무한 루프를 사용하여 사용자가 원할 때까지 반복
+	while (1) {
+		printf("\n배열 구조체 연산 선택:\n");
+		printf("1. Insert (삽입)\n");
+		printf("2. Delete (삭제)\n");
+		printf("3. Show Last Data (맨 마지막 데이터 확인)\n");
+		printf("4. Exit (종료)\n");
+		printf("선택: ");
+		scanf("%d", &choice);
+		// 위 메뉴에 관련된 명령어 삽입 부분
+		// 만약 선택 번호가 잘못되었을 경우 다시 명령어 요청
+		switch (choice) {
+		case 1:
+			printf("삽입할 값을 입력하세요: ");
+			scanf("%d", &value);
+			insert(&s, value);
+			break;
+		case 2:
+			value = delete(&s);
+			if (value != -1) {
+				printf("삭제: %d\n", value);
+			}
+			break;
+
+		case 3:
+			value = showLast(&s);
+			if (value != -1) {
+				printf("맨 마지막 데이터: %d\n", value);
+			}
+			break;
+		case 4:
+			printf("프로그램을 종료합니다.\n");
+			return 0;
+
+		default:
+			printf("잘못된 선택입니다.\n");
+
+		}
+	}
+	return 0;
+}
+
