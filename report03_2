@@ -1,0 +1,54 @@
+#include <stdio.h>
+
+
+int makeTournament(int tournamentArray[], int size, int value);
+void printTournament(int size, int tournamentArray[]);
+
+int main() {
+	int tournamentArray[200];
+	//makeTournament(tournamentArray);
+	int size = 1; //인덱스 1번부터 시작
+	int input;
+	//data 배열에 입력
+	//입력이 -1이면 break
+	printf("정수를 입력하시오:\n");
+	while (scanf("%d", &input) && input != -1) {
+		size = makeTournament(tournamentArray, size, input);
+		printTournament(size, tournamentArray);
+	}
+
+	return 0;
+
+	/*for (i = 0; i <= n; i++) {
+		scanf("%d", &tournamentArray[i]);
+
+		makeTournament(tournamentArray, n);
+		Max = nextMax;
+		printf("Max = %d\n", tournamentArray[1]);
+		printf("NextMax = %d\n", Max);
+	}	*/
+}
+
+
+int makeTournament(int array[], int size, int value){
+	array[size] = value;
+	int MAX = size;
+	//while문을 써서 자리 바꿈
+	while (MAX > 1 && array[MAX] > array[MAX / 2]) {
+		int temp = array[MAX];
+		array[MAX] = array[MAX / 2];
+		array[MAX / 2] = temp;
+	
+		MAX = MAX / 2;
+	}
+	return size + 1;
+}
+
+void printTournament(int size, int array[]) {
+	printf("[");
+	for (int i = 1; i < size; i++) {
+		printf("%d", array[i]);
+			if (i < size - 1) printf(",");
+	}
+	printf("]\n");
+}
