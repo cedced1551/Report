@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct node {
+	int data;
+	struct node* link;
+}node; //노드 타입 정의
+void makeList(node**); // 리스트 생성 함수. 전달인자: 헤더 포인터의 포인터
+void viewList(node*); // 리스트 출력 함수
+node* findLast(node*); /* 리스트 마지막 노드를 찾는 함수로 그 노드의 포인터 리턴
+ 전달인자 : 헤더 포인터 값 */
+int findPosition(node*, node**, node**, int);
+void insertList(node**, node*, int);
+/* 리스트 삽입함수 전달인자: 헤터 포인터의 포인터, 타깃 포인터, 삽입데이터 */
+void deleteList(node**, node*, node*);
+void main() {
+	node* head = NULL;
+	// 노드 생성
+	makeList(&head);
+	// 생성된 리스트 출력
+	viewList(head);
+	int target;
+	printf("\n삭제할 데이터 입력: ");
+	scanf("%d", &target);
+
+	node* pre = NULL, * targetPtr = NULL;
+	if (findPosition(head, &pre, &targetPtr, target)) {
+		deleteList(&head, pre, targetPtr);  // 노드 삭제
+	}
+	else {
+		printf("Data %d not found.\n", target);
+	}
+	viewList(head);
+
+	return 0;
+}
+
+node* findLast(node* hptr) {
+	//만약 헤더가 널이 아니면 마지막 노드까지 포인터 이동
+		//리턴 hptr
+	//널이라면 널 반환
+	if (hptr == NULL) {
+		return NULL;
+	}
+	while (hptr-> link != NULL) {
+		hptr = hptr->link;
+	}
+	return hptr;
+}
+int findPosition(node* hptr, node** pre, node** targetPtr, int data){
+	*pre = NULL;
+	*targetPtr = NULL;
+
+	while (hptr != NULL) {
+		if (hptr->data == data) {
+			*targetPtr = hptr;
+			return 1;  // 데이터가 존재할 경우 1 반환
+		}
+		*pre = hptr;
+		hptr = hptr->link;
+	}
+	return 0;  // 데이터가 없을 경우 0 반환
+}
+
+void insertList(node** hptr, node* pptr, int data) {
+	node* new = (node*)malloc(sizeof(node));
+	new->data = data;
+	new->link = NULL;
+	/*새로운 노드 생성
+		만약* hptr 값이 널이면 현재 empty 이므로
+		* hptr 이 new 를 가리키게 함
+		그렇지 않고
+		만약 pptr 값이 널이면 처음에 입력해야 함으로
+		새로운 노드의링크, 즉 new->link 는* hptr 값으로 함
+		* hptr 값은 new 의 값으로 함.
+		그렇지 않다면, 즉 리스트 중간에 삽입해야 함으로
+		new->link 의 값은 pptr 의 링크 값이며
+		pptr->link 는 new 의 값으로 함*/
+	if (*hptr == NULL) {
+		*hptr = new;
+	}
+	else if (pptr == NULL) {
+		new->link = *hptr;
+		*hptr = new;
+	}
+	else {
+		new->link = pptr->link;
+		pptr->link = new;
+	}
+}
+void deleteList(node** hptr, node* pptr, node* target) {
+	if (target == NULL) {
+		printf("No node to delete.\n");
+		return;
+	}
+
+	if (pre == NULL) {  // 첫 번째 노드 삭제
+		*hptr = target->link;
+	}
+	else {  // 중간 또는 끝 노드 삭제
+		pre->link = target->link;
+	}
+	free(target);  // 메모리 해제
+	printf("Node with data %d deleted.\n", target->data);
+}
+void makeList(node** hptr) {
+	node* pre = NULL;
+	node* new = NULL;
+	int data;
+	//findLast 를 이용하여 리스트 마지막 노드 포인터값을 pre 에 저장
+		printf("입력할 데이터 는 < enter -1 to end>\n");
+	scanf("%d", &data);
+	while (data != -1) {
+		insertList(hptr, pre, data);
+		//리스트 마지막 노드 포인터 확인
+		pre = findLast(*hptr);
+			printf("Enter data again\n");
+		scanf("%d", &data);
+	}
+}
+void viewList(node* ptr) {
+	while (ptr != NULL) {
+		printf("%d ", ptr->data);
+		ptr = ptr->link;
+	}
+	printf("NULL\n");
+}
